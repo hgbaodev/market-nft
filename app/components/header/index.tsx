@@ -3,16 +3,17 @@ import Link from "next/link";
 import Navigation from "./Navigation";
 import Mode from "./Mode";
 import useDarkModeCheck from "@/hooks/useDarkModeCheck";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import useStickyMenu from "@/hooks/useStickyMenu";
 import AdminBar from "./AdminBar";
 import Search1 from "./Search1";
 import Search2 from "./Search2";
-import WalletConnectButton from "../button/WalletConnectButton";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 
 export default function Header(): JSX.Element {
   const path = usePathname();
+  const router = useRouter();
 
   // is dark hook
   const isDark = useDarkModeCheck();
@@ -20,6 +21,7 @@ export default function Header(): JSX.Element {
   // sticky menu
   const isSticky1 = useStickyMenu(200);
   const isSticky2 = useStickyMenu(250);
+  const { data: session } = useSession();
 
   return (
     <>
@@ -100,7 +102,15 @@ export default function Header(): JSX.Element {
                     {path !== "/authors-1" &&
                       path !== "/authors-2" &&
                       path !== "/create-item" &&
-                      path !== "/edit-profile" && <WalletConnectButton />}
+                      path !== "/edit-profile" && (
+                        <Link href="/login" rel="login">
+                          <button onClick={() => {
+                            router.push("/login");
+                          }} className="sc-button header-slider style style-1 wallet fl-button pri-1">
+                            <span>Login</span>
+                          </button>
+                        </Link>
+                      )}
                     <AdminBar />
                   </div>
                 </div>
